@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<style>
+    body {
+        background-color: #e3e3e3;
+        user-select: none;
+    }
+
+    .header {
+        min-height: 60px;
+        text-align: center;
+        font-weight: bold;
+        background-color: #ffffff;
+        margin-top: 60px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .headerText {
+        font-size: 55px;
+        padding: 0px 0px 15px 0px;
+        color: #848484;
+    }
+
+    .mainDisplay {
+        text-align: center;
+        padding: 0 12px;
+    }
+
+    .mainDisplay>div {
+        border: 1px solid #ffe7e7;
+        min-height: 400px;
+        background: #fff4ea;
+
+    }
+
+    .control {
+        padding: 100px 0px 0 0;
+
+    }
+
+    .hindi,    .eng,    .prev {
+        font-size: 20px;
+        margin: 25px 0;
+        color: #ed088c;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .prev {
+        display: none;
+    }
+
+    .hindi span,
+    .eng span,
+    .prev span {
+        padding: 0 10px;
+    }
+
+    .timer {
+        font-size: 35px;
+
+    }
+
+    .arrow {
+        color: #d1d1d1;
+    }
+
+    .arrow:hover {
+        cursor: pointer;
+    }
+
+    .timerBtn {
+        padding: 5px 35px;
+        font-size: 20px;
+        border: none;
+        color: white;
+    }
+
+    .timerBtn span {
+        padding-right: 10px;
+    }
+
+    .start:hover {
+        color: white;
+        font-size: 21px;
+    }
+
+    .start {
+        background-color: #5b5b5b;
+    }
+
+    .displayBox,
+    .timerDisplay {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .displayBox {
+        background-color: rgba(255, 250, 206, 0.7);
+        background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%);
+        background-size: 25px 25px;
+        color: white;
+        
+    }
+
+    ​ .display {
+        color: #3f3f3f;
+    }
+
+    .display {
+        color: #686868 !important;
+        font-size: 25px;
+        font-weight: 600;
+        background-color: white;
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: -7px 7px 20px 0px #ed67081c;
+        border: 1px solid #ed670829;
+    }
+
+    .stop,
+    .stop:hover {
+        background-color: #c88c1f;
+        color: #ffffff;
+    }
+
+    .reset {
+        color: #3f3f3f;
+        border: 1px solid #343434;
+        padding: 5px 18px;
+        display: none;
+        background: #ffffff;
+    }
+
+    .btn-check:focus+.btn,
+    .btn:focus {
+        box-shadow: none;
+    }
+
+    .twisterOverlay {
+      /*  background: repeating-linear-gradient(45deg, transparent, transparent 0px, #b4b4b4 7px, #b4b4b4 calc(2 * 16px));
+        color: #b4b4b473 !important;
+        box-shadow: none !important;
+        border: none;*/
+
+        background: linear-gradient(217deg, #d5d5d5d9, #84848491);
+        color: #b8b8b81a !important;
+        box-shadow: -5px 5px 0px 0 #868686c7;
+        border: none;
+
+       /* background: linear-gradient(152deg, #ffdaa2d9, #ff8989b8);
+        color: #ffdaa22e !important;
+        box-shadow: none !important;
+        border: none;*/
+    }
+
+    .timerOverMsg {
+        font-size: 30px;
+        position: absolute;
+        display: none; 
+        color: #fcf400;
+        padding: 10px;
+        border-radius: 10px;
+        /*width: 42%;*/
+        background: linear-gradient(  30deg , #911d1d, #dd5a5a);
+        font-weight: 900;
+    }
+    @keyframes swing
+{
+    20%, 50%, 80%, 100% {transform: translateY(0);} 
+    0% {transform: translateY(-30px);} 
+   40% {transform: translateY(-20px);} 
+   60% {transform: translateY(-10px);} 
+}
+.displayEffect
+{
+        -webkit-animation: swing 1s ease;
+        animation: swing 1s ease;
+        -webkit-animation-iteration-count: 1;
+        animation-iteration-count: 1;
+}
+    /*.info{
+        position: absolute;
+        bottom: 0;
+    }*/
+</style>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="headerText">Tongue Twister</div>
+        </div>
+        <div class="row mainDisplay">
+            <div class="col-md-3 timerDisplay">
+                <div class="timer">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: right;padding-right: 30px;"><span class="arrow"
+                                action="redMin">&#9472;</span></div>
+                        <div class="col-md-6" style="text-align: left;padding-left: 30px;"><span class="arrow"
+                                action="redSec">&#9472;</span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5" style="text-align: right;padding: 0px 10px 0 0;"><span id="minute">00</span></div>
+                        <div class="col-md-2"><span>:</span></div>
+                        <div class="col-md-5" style="text-align: left;padding: 0px 0px 0px 10px;"><span id="second">30</span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: right;padding-right: 30px;"><span class="arrow"
+                                action='incMin'>+</span></div>
+                        <div class="col-md-6" style="text-align: left;padding-left: 30px;"><span class="arrow"
+                                action='incSec'>+</span></div>
+                    </div>
+                    <div class="timerBtnDiv">
+                        <button class="btn timerBtn start"><span>&#9655;</span>Start</button>
+                    </div>
+                    <div>
+                        <button class="btn reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 displayBox">
+                <div class="display"><span style="color: #a1a1a1;">Twister will appear here
+                        ...<span></span></span></div>
+                <div class="timerOverMsg" title="Click to Hide">&#128163;<div>Time Over</div>
+                </div>
+                <!--<div class="info"><kbd>ALT</kbd> + <kbd>-</kbd>Decrease Twister font <kbd>ALT</kbd> + <kbd>+</kbd>Increase Twister font</div>-->
+            </div>
+            <div class="col-md-3 control">
+                <div class="hindi" title="Hindi Next Twister">Next Hindi<span>&#8594;</span></div>
+                <div class="eng" title="English Next Twister">Next English<span>&#8594;</span></div>
+                <div class="prev" title="Previous Twister"><span>&#8592;</span>Previous</div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+            crossorigin="anonymous"></script>
+</body>
+<script>
+    var myTimer;
+    var resetMin = "00", resetSec = '30';
+    var hindiArr = [], engArr = [], hindiCount = 0, engCount = 0;
+    var hindiTwister = ["काला कबूतर,<br> सफेद तरबूज,<br> काला तरबूज,<br> सफेद कबूतर", "चक्के पे चक्का, <br>चक्की में आटा,<br> आटे में चक्की", "कोका कोला कोकिला का किला", "पानी में पकोड़ी कचोड़ी की चटोरी", "पानी भर के घड़ा भर घड़ा भर के पानी भर", "छल्ले में छल्ला छज्जे पे चच्चा", "उड़ी चिड़ी ऊंची उड़ी सब्जी पूड़ी ठंडी पड़ी", "चार कचौरी कच्चे चार पक्के कचौरी ", "समझ समझ के समझ को समझो,<br> समझ समझना भी एक समझ है,<br> समझ समझ कॆ जो ना समझे,<br> मेरी समझ मे वो ना समझ है।", "एक ऊँचा ऊँट है,<br> पुँछ ऊँची ऊँट की,<br> पुँछ से भी ऊँची क्या पीठ ऊँची ऊँट की।","राम का राज़, राज़ ने राज़ की बात राज़ को बताया","चंदा चमके चम चम,<br> चीखे चौकन्ना चोर,<br>चींटी चाटे चीनी,<br>चटोरी चीनी खोर","तुला राम ताला तोल के तेल में तुल गया, तुला हुआ तोला तले हुए तेल में तल गया","चार चोर चार छाते में चार अचार चाटे, चाट-चाट कर चार छाता चोर चुराकर भागे","Dali Dali Pe Nazar Dali, Kisine Achchi Dali, Kisine Buri Dali, Jis Dali Pe Maine Nazar Dali Wohi Dali Kisine Tod Dali","लपक बबुलिया लपक, अब ना लपकबे त लपकबे कब","मत हँस हँस मत, मत फंस फंस मत"];
+    var engTwister = ["Betty Botter bought some butter but, said she, the butter’s bitter. If I put it in my batter, it will make my batter bitter. But a bit of better butter will make my bitter batter better. So she bought some better butter, better than the bitter butter, put it in her bitter batter, made her bitter batter better.", "Birdie birdie in the sky laid a turdie in my eye. If cows could fly I’d have a cow pie in my eye", "How much ground would a groundhog hog, if a groundhog could hog ground? A groundhog would hog all the ground he could hog, if a groundhog could hog ground.", "I thought a thought.But the thought I thought Wasn’t the thought I thought I thought.If the thought I thought I thought, Had been the thought I thought,I wouldn’t have thought I thought.", "Can you can a canned can into an un-canned can like a canner can can a canned can into an un-canned can?","How can a clam cram in a clean cream can?","Six sick hicks nick six slick bricks with picks and sticks.","I slit the sheet, the sheet I slit, and on the slitted sheet I sit.","Round the rough and rugged rock the ragged rascal rudely ran","Give papa a cup of proper coffee in a copper coffe cup.","The two Tibble twins tied tiny twine to twelve teachers’ tipping trek tents.","Upper roller lower roller"];
+    function nextTwister(lang) {
+        $('#minute').html(resetMin);
+        $('#second').html(resetSec);
+        resetToStart();
+        $('.display').addClass('displayEffect');
+        setTimeout(function(){ $('.display').removeClass('displayEffect'); }, 1000);
+        if (lang == 'hindi') {
+            if (!hindiArr.length) {
+                total = hindiTwister.length;
+                randomIndex(hindiArr, total);
+            }//console.log(hindiTwister[hindiArr[hindiCount]].length);
+            if(hindiCount<hindiTwister.length)
+                $('.display').addClass('twisterOverlay').html(hindiTwister[hindiArr[hindiCount++]]);
+            else
+            $('.display').removeClass('twisterOverlay').html('&#127987;<br><br>... we ran empty !!');
+
+        }
+        else if (lang == 'eng') {
+            if (!engArr.length) {
+                total = engTwister.length;
+                randomIndex(engArr, total);
+            }//console.log(engArr);
+            if(engCount<engTwister.length)
+            $('.display').addClass('twisterOverlay').html(engTwister[engArr[engCount++]]);
+            else
+            $('.display').removeClass('twisterOverlay').html('&#127987;<br><br>... we ran empty !!');
+        }
+        function randomIndex(Obj, max) {
+            while (Obj.length < max) {
+                var r = Math.floor(Math.random() * max);
+                if (Obj.indexOf(r) === -1) Obj.push(r);
+            }
+        }
+    }
+    function prevTwister() {
+
+    }
+    function resetToStart() {
+        clearInterval(myTimer);
+        $('.timerBtn').addClass('start').removeClass('stop');
+        $('.timerBtn').html('<span>&#9655;</span>Start');
+    }
+    function startTimer() {
+        myTimer = setInterval(timer, 1000);
+        function timer() {
+            min = parseInt($('#minute').html());
+            sec = parseInt($('#second').html());
+            if (min > 0 && sec >= 0) {
+                if (sec == 0) { min--; sec = 59; }
+                else
+                    sec--;
+            }
+            else if (min == 0 && sec > 0) {
+                sec--;
+                if (min == 0 && sec == 0) {
+                    clearInterval(myTimer);
+                    resetToStart();
+                    //$('.display').addClass('twisterOverlay');
+                   // setTimeout(function(){  }, 1000);
+                   $('.timerOverMsg').fadeIn(800);
+                   $('.timerOverMsg').fadeOut(1000);
+                   $('.timerOverMsg').fadeIn(800);
+                   $('.timerOverMsg').fadeOut(1000);
+                    $('.reset').show();
+                    //$('.timerOverMsg').fadeOut(5000);
+                }
+            }
+            else {
+                clearInterval(myTimer);
+                resetToStart();
+                $('.reset').show();
+            }
+
+            (min < 10 ? $('#minute').html('0' + min) : $('#minute').html(min));
+            (sec < 10 ? $('#second').html('0' + sec) : $('#second').html(sec));
+        }
+    }
+    function parseInteger(strnum, action) {
+        num = parseInt(strnum);
+        switch (action) {
+            case 'redSec': case 'redMin':
+                return (num == 0 ? num = 59 : num -= 1); break;
+            case 'incMin': case 'incSec':
+                return (num == 59 ? num = 0 : num += 1);
+        }
+
+    }
+    $('.arrow').click(function () {
+        action = $(this).attr('action');
+        if (action == 'redMin' || action == 'incMin')
+            number = parseInteger($('#minute').html(), action);
+        else if (action == 'redSec' || action == 'incSec')
+            number = parseInteger($('#second').html(), action);
+
+        switch (action) {
+            case 'redMin': case 'incMin':
+                (number < 10 ? $('#minute').html('0' + number) : $('#minute').html(number)); break;
+            case 'redSec': case 'incSec':
+                (number < 10 ? $('#second').html('0' + number) : $('#second').html(number)); break;
+        }
+        resetToStart();
+    });
+    $('.timerBtn').click(function () {
+        if ($('.timerBtn').hasClass('start')) {
+            $('.timerBtn').addClass('stop').removeClass('start');
+            startTimer();
+            $('.timerBtn').html('<span>&#9632;</span>Stop');
+            resetMin = $('#minute').html();
+            resetSec = $('#second').html();
+            $('.reset').html('Reset to ' + resetMin + ":" + resetSec);
+            $('.display').removeClass('twisterOverlay');
+            $('.timerOverMsg').hide();
+        }
+        else {
+            resetToStart();
+            $('.reset').html('Reset to ' + resetMin + ":" + resetSec);
+            $('.reset').show();
+        }
+    });
+    $('.reset').click(function () {
+        //$('.reset').hide();
+        $('#minute').html(resetMin);
+        $('#second').html(resetSec);
+        resetToStart();
+    });
+    $('.display').click(function () {
+        if ($('.display').hasClass('twisterOverlay'))
+            $('.display').removeClass('twisterOverlay');
+        else
+            $('.display').addClass('twisterOverlay');
+    });
+    $('.hindi').click(function () {
+        previousFlag = 'hi';
+        nextTwister('hindi');
+    });
+    $('.eng').click(function () {
+        previousFlag = 'en';
+        nextTwister('eng');
+    });
+    $('.prev').click(function () {
+        previousFlag = 'en';
+        prevTwister();
+    });
+    $('.timerOverMsg').click(function () {
+        $('.timerOverMsg').hide();
+    });
+    function KeyPress(e) {
+      var evtobj = window.event? event : e
+      if (evtobj.keyCode == 189 && evtobj.altKey) {
+        $('.display').css('fontSize',(parseInt($('.display').css('fontSize'))-2)+'px');
+      }
+        else if(evtobj.keyCode == 187 && evtobj.altKey) {
+            $('.display').css('fontSize',(parseInt($('.display').css('fontSize'))+2)+'px');
+        };
+}
+
+document.onkeydown = KeyPress;
+</script>
