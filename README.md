@@ -1,6 +1,6 @@
 # Tongue-Twister
 A fun game project where one can try some Hindi and English Tongue Twisters. This comes with a timer which add more excitement to finish twisters in limited duration.
-Demo here - https://hjkpd.csb.app/TongueTwister.html
+Demo here - https://mxrgq.csb.app/TongueTwister.html
 
 Used - HTML, CSS, JQuery
 
